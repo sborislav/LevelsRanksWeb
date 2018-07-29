@@ -1,7 +1,7 @@
 
 # LevelsRanksWeb
 
-WEB библиотека для плагина Levels Ranks [![HLmod](https://dev.sborislav.xyz/lr240/hlmod.png)](https://hlmod.ru/resources/177/)
+WEB библиотека для плагина Levels Ranks [![HLmod](https://dev.sborislav.xyz/lr240/hlmod.png)](https://hlmod.ru/resources/177/) предназначена для PHP-разработчиков
 ## Установка
 
     include "bootstrap.php";
