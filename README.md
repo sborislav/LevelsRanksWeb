@@ -1,3 +1,4 @@
+
 # LevelsRanksWeb
 
 WEB библиотека для плагина Levels Ranks [![HLmod](https://dev.sborislav.xyz/lr240/hlmod.png)](https://hlmod.ru/resources/177/)
@@ -97,3 +98,45 @@ WEB библиотека для плагина Levels Ranks [![HLmod](https://de
 - Получение списка игроков или игрока
 - Перебор массива с использованием ссылки на **&**$player и проверка его steam_id или другого параметра
 - Если условие выполнилось то `$player->*дополнительный параметр* = *значение*`
+
+## Немного о нововведениях 2.4.x
+#### Оружие
+Получить статистику по оружию можно для убийств и выстрелов
+
+    $player->getKills(); // все убийства
+    $player->getKills(true, $game)->getWeapons();
+    или 
+    $player->getKills(true)->setGame($game)->getWeapons();
+ 
+ Параметр $game может быть получен от сервера 
+
+> $server->getGameId()
+
+ или 
+
+> $server->getGameNameSlim()
+
+ Полные названия игр не подходят для поиска. Если игра не будет найдена, то будет возвращено общее количество убийств.
+Функция getWeapons() может получать несколько вариаций значений
+
+    $player->getKills(true)->getWeapons($weapon_group = 0, $return_array = false, $top = false);
+    $player->getKills(true)->getWeapons($return_array = false, $weapon_group = 0, $top = false);
+    $player->getKills(true)->getWeapons($return_array = false, $top = false);
+   Эта функция чуствительная к типам данных. 
+   Переменная $top не имеет смысла без включенного возврата массива. 
+   Включенный массив возвращает информацию об оружии: его название, иконка, картинка и значеня пользователя из базы данных.
+   Получить список игровых групп можно функцией 
+   
+
+    $player->getKills(true)->GroupName()
+    
+  В которой ключи будут ID группы оружия, а значения название группы. 
+#### Попадания
+Попадания работают по такому же принципу
+
+    $player->getHits(); // все попадания
+    $player->getHits(true)->head;
+    $player->getHits(true)->chest;
+    $player->getHits(true)->stomach;
+    $player->getHits(true)->arms;
+    $player->getHits(true)->legs;
