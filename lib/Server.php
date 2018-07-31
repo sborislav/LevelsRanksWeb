@@ -3,12 +3,11 @@
 namespace LevelsRanks;
 
 use LevelsRanks\Core\Connect;
-use LevelsRanks\Core\Source;
 use LevelsRanks\Exception\CacheCreateFail;
 use LevelsRanks\Entity\Server as EntityServer;
 use LevelsRanks\Exception\FailConnect;
 
-class Server extends Source
+class Server
 {
     /**
      * @var EntityServer[]
@@ -19,6 +18,9 @@ class Server extends Source
      * @var array
      */
     private $gamelist = array();
+
+    /* @var $connect Connect[] */
+    static $connect;
 
     private $count = 0;
 
@@ -94,6 +96,10 @@ class Server extends Source
 
     }
 
+    /**
+     * Количество серверов
+     * @return int
+     */
     public function count()
     {
         return $this->count;
@@ -118,6 +124,10 @@ class Server extends Source
         return isset($this->servers[$id]);
     }
 
+    /**
+     * Получение массива серверов
+     * @return array|EntityServer[]
+     */
     public function getAll()
     {
         if ( empty($this->servers) && file_exists(__DIR__.'/Cache/servers.php') ) {
@@ -175,6 +185,7 @@ class Server extends Source
     }
 
     /**
+     * Удаление сервера
      * @param int id
      * @return bool
      */

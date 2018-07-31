@@ -1,6 +1,5 @@
 <?php
 
-include 'lib/Core/Source.php';
 include 'lib/Core/Connect.php';
 include 'lib/Core/Weapons.php';
 include 'lib/Core/Hits.php';

@@ -7,7 +7,7 @@ class Hits
     /**
      * @var int Всего попаданий
      */
-    public $all;
+    public $all = 0;
 
     /**
      * @var int Попадаинй в голову
@@ -34,19 +34,32 @@ class Hits
      */
     public $legs = 0;
 
+    private $proVersion = false;
+
     public function __construct($value)
     {
+        if ( !is_null($value) ) {
+            $value_array = explode(';', $value);
+            array_pop($value_array);
+            $i = 0;
 
-        $value_array = explode(';', $value);
-        array_pop($value_array);
-        $i = 0;
-
-        foreach (get_class_vars(__CLASS__) as $name => $value) {
-            if ( !isset($value_array[$i]) )
-                break;
-            $this->$name = $value_array[$i];
-            $i++;
+            if ( count($value_array)>1 ) {
+                $this->proVersion = true;
+                foreach (get_class_vars(__CLASS__) as $name => $value) {
+                    if (!isset($value_array[$i]))
+                        break;
+                    $this->$name = (int)$value_array[$i];
+                    $i++;
+                }
+            }else {
+                $this->all = (int)$value_array[0];
+            }
         }
+    }
+
+    public function isPro()
+    {
+        return $this->proVersion;
     }
 
     /**

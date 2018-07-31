@@ -72,6 +72,7 @@ class Weapons
     private static $WEAPON_SniperRifle   = 7;
     private static $WEAPON_MachineGuns   = 8;
     private        $weapon_group         = null;
+    private $proVersion = false;
 
     private $array = array(
         'knife' => [
@@ -307,25 +308,36 @@ class Weapons
 
     public function __construct($value, $game = null)
     {
-        $this->weapon_group = self::$WEAPON_All;
-        $this->game         = self::$GAME_CSGO;
+        if ( !is_null($value) ) {
+            $this->weapon_group = self::$WEAPON_All;
+            $this->game = self::$GAME_CSGO;
 
-        $value_array = explode(';', $value);
-        array_pop($value_array);
-        $i = 0;
+            $value_array = explode(';', $value);
+            array_pop($value_array);
+            $i = 0;
 
-        foreach (get_class_vars(__CLASS__) as $name => $value) {
-            if ( !isset($value_array[$i]) )
-                break;
-            $this->$name = $value_array[$i];
-            $i++;
+            if ( count($value_array)>1 ){
+                $this->proVersion = true;
+                foreach (get_class_vars(__CLASS__) as $name => $value) {
+                    if (!isset($value_array[$i]))
+                        break;
+                    $this->$name = (int)$value_array[$i];
+                    $i++;
+                }
+
+                if (!empty($game)) {
+                    if (!$this->setGame($game))
+                        throw new \Exception('Игра не найдена');
+                }
+            } else {
+                $this->all = (int)$value_array[$i];
+            }
         }
+    }
 
-        if (!empty($game)){
-            if (!$this->setGame($game))
-                return $this->All();
-        }
-
+    public function isPro()
+    {
+        return $this->proVersion;
     }
 
     /**

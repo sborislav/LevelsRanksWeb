@@ -10,7 +10,7 @@ class Config
      * @var array
      */
     private $configs = [
-        'system' => 2430,  // системная информация необходимая для определения версии вашего LR
+        'system' => 2432,  // системная информация необходимая для определения версии вашего LR
         'version' => '2.4.3  for SB MaterialAdmin',
         'recordOnPage' =>  50,
         'icon_id' => 20,

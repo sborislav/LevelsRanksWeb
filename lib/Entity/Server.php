@@ -2,10 +2,9 @@
 
 namespace LevelsRanks\Entity;
 
-use LevelsRanks\Core\Source;
 use LevelsRanks\Players;
 
-class Server extends Source implements ServerInterface
+class Server implements ServerInterface
 {
     /**
      * @var int
@@ -115,7 +114,7 @@ class Server extends Source implements ServerInterface
     {
         if (!empty($sql)) {
             $sql = str_replace('{table}', $this->table, $sql);
-            return (bool)static::$connect[$this->id]->get()->exec($sql);
+            return (bool)\LevelsRanks\Server::$connect[$this->id]->get()->exec($sql);
         }
         return false;
     }
@@ -125,7 +124,7 @@ class Server extends Source implements ServerInterface
      */
     public function SigBD()
     {
-        $sig_query = static::$connect[$this->id]->get()->query('SHOW COLUMNS FROM '.$this->table);
+        $sig_query = \LevelsRanks\Server::$connect[$this->id]->get()->query('SHOW COLUMNS FROM '.$this->table);
         $for_hash = '';
 
         foreach ($sig_query as $row) {

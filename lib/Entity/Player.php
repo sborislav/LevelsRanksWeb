@@ -65,7 +65,7 @@ class Player implements PlayerInterface
 
     public function getValue()
     {
-        return $this->value;
+        return (int)$this->value;
     }
 
     public function getSteam()
@@ -135,7 +135,7 @@ class Player implements PlayerInterface
 
     public function getRank()
     {
-        return $this->rank;
+        return (int)$this->rank;
     }
 
     /**
@@ -150,7 +150,6 @@ class Player implements PlayerInterface
     public function getKills($obj = false, $game = null)
     {
         if (!empty($this->kill_obj)) {
-            $this->kill_obj->setGame($game);
             if ($obj)
                 return $this->kill_obj;
             else
@@ -166,7 +165,7 @@ class Player implements PlayerInterface
 
     public function getDeaths()
     {
-        return $this->deaths;
+        return (int)$this->deaths;
     }
 
     /**
@@ -189,7 +188,7 @@ class Player implements PlayerInterface
 
     public function getAssists()
     {
-        return $this->assists;
+        return (int)$this->assists;
     }
 
     /**
@@ -202,7 +201,7 @@ class Player implements PlayerInterface
      * @return int|Weapons
      * @throws \Exception
      */
-    public function getHeadshots($obj = false)
+    public function getHeadshots($obj = false, $game = null)
     {
         if (!empty($this->headshots_obj)){
             if ($obj)
@@ -211,7 +210,7 @@ class Player implements PlayerInterface
                 return $this->headshots_obj->All();
         }
 
-        $this->headshots_obj = new Weapons($this->headshots);
+        $this->headshots_obj = new Weapons($this->headshots, $game);
         if ($obj)
             return $this->headshots_obj;
         else
@@ -220,7 +219,7 @@ class Player implements PlayerInterface
 
     function getShoots()
     {
-        return $this->shoots;
+        return (int)$this->shoots;
     }
 
     /**
@@ -287,7 +286,7 @@ class Player implements PlayerInterface
      */
     public function getRoundLose()
     {
-        return $this->round_lose;
+        return (int)$this->round_lose;
     }
 
     /**
@@ -295,14 +294,21 @@ class Player implements PlayerInterface
      */
     public function getRoundWin()
     {
-        return $this->round_win;
+        return (int)$this->round_win;
     }
 
+    public function getRoundAll()
+    {
+        return $this->getRoundLose()+$this->getRoundWin();
+    }
 
     public function getPlaytime($sec = false)
     {
+        if (empty($this->playtime))
+            return 'Нет данных';
+
         if ($sec)
-            return $this->playtime;
+            return (int)$this->playtime;
 
 
         if ( $this->playtime > 31536000 )
@@ -318,10 +324,10 @@ class Player implements PlayerInterface
             if (LevelsRanks::$config->formatDate) {
                 return $this->newtime();
             } else {
-                return date('%d.%m.%y', $this->lastconnect);
+                return date('d.m.y', $this->lastconnect);
             }
         } else {
-            return $this->lastconnect;
+            return (int)$this->lastconnect;
         }
     }
 

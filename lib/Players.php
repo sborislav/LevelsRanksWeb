@@ -7,7 +7,7 @@ use LevelsRanks\Entity\Player;
 use LevelsRanks\Exception\FailConnect;
 use PDO;
 
-class Players extends Source
+class Players
 {
 
     private $id ;
@@ -29,7 +29,7 @@ class Players extends Source
     public function count()
     {
 
-        $stmt = static::$connect[$this->id]->get()->query('SELECT COUNT(*) as count FROM `'.$this->table.'`');
+        $stmt = Server::$connect[$this->id]->get()->query('SELECT COUNT(*) as count FROM `'.$this->table.'`');
 
         if ( $stmt === false )
             throw new FailConnect("Таблица $this->table не существует");
@@ -53,7 +53,7 @@ class Players extends Source
      */
     public function top()
     {
-        return static::$connect[$this->id]->get()->query('SELECT * FROM `'.$this->table.'` ORDER BY value DESC LIMIT 10')->fetchAll(PDO::FETCH_CLASS, 'LevelsRanks\Entity\Player');
+        return Server::$connect[$this->id]->get()->query('SELECT * FROM `'.$this->table.'` ORDER BY value DESC LIMIT 10')->fetchAll(PDO::FETCH_CLASS, 'LevelsRanks\Entity\Player');
     }
 
     /**
@@ -63,7 +63,7 @@ class Players extends Source
      */
     public function page($page)
     {
-        $stmt = static::$connect[$this->id]->get()->prepare('SELECT * FROM `'.$this->table.'` ORDER BY value DESC LIMIT :page, :recordOnPage');
+        $stmt = Server::$connect[$this->id]->get()->prepare('SELECT * FROM `'.$this->table.'` ORDER BY value DESC LIMIT :page, :recordOnPage');
         $stmt->bindValue(':page', $page, PDO::PARAM_INT);
         $stmt->bindValue(':recordOnPage', LevelsRanks::$config->recordOnPage, PDO::PARAM_INT);
         $stmt->execute();
@@ -71,12 +71,13 @@ class Players extends Source
     }
 
     /**
+     * Информация об одном игроке
      * @param $steam32
      * @return Player
      */
     public function player($steam32)
     {
-        $stmt = static::$connect[$this->id]->get()->prepare('SELECT * FROM `'.$this->table.'` WHERE steam LIKE :steam');
+        $stmt = Server::$connect[$this->id]->get()->prepare('SELECT * FROM `'.$this->table.'` WHERE steam LIKE :steam');
         $stmt->execute(['steam' => "%$steam32"]);
         $stmt->setFetchMode(PDO::FETCH_CLASS, 'LevelsRanks\Entity\Player');
         return $stmt->fetch();
@@ -97,7 +98,7 @@ class Players extends Source
         if ( LevelsRanks::$config->typeStats )
             $value = 1000;
 
-        $stmt = static::$connect[$this->id]->get()->prepare('UPDATE `'.$this->table.'` SET `value` = :value, `rank` = NULL, `kills` = NULL, `deaths` = NULL, `shoots` = NULL, `hits` = NULL, `headshots` = NULL, `assists` = NULL, `round_win` = NULL, `round_lose` = NULL WHERE `steam` LIKE :steam');
+        $stmt = Server::$connect[$this->id]->get()->prepare('UPDATE `'.$this->table.'` SET `value` = :value, `rank` = NULL, `kills` = NULL, `deaths` = NULL, `shoots` = NULL, `hits` = NULL, `headshots` = NULL, `assists` = NULL, `round_win` = NULL, `round_lose` = NULL WHERE `steam` LIKE :steam');
         return $stmt->execute(['value' => $value,'steam'=> "%$steam%" ]);
     }
 
@@ -112,13 +113,13 @@ class Players extends Source
         if($method == "steam"){
             $steam = LevelsRanks::SteamConvert($data);
             if ($steam) {
-                $stmt = static::$connect[$this->id]->get()->prepare('SELECT * FROM `'.$this->table.'` WHERE steam LIKE ? ORDER BY value DESC LIMIT 10');
+                $stmt = Server::$connect[$this->id]->get()->prepare('SELECT * FROM `'.$this->table.'` WHERE steam LIKE ? ORDER BY value DESC LIMIT 10');
                 $stmt->execute(["%$steam"]);
                 return $stmt->fetchAll(PDO::FETCH_CLASS, 'LevelsRanks\Entity\Player');
             }
 
         }else{
-            $stmt = static::$connect[$this->id]->get()->prepare('SELECT * FROM `'.$this->table.'` WHERE name LIKE ? ORDER BY value DESC LIMIT 10');
+            $stmt = Server::$connect[$this->id]->get()->prepare('SELECT * FROM `'.$this->table.'` WHERE name LIKE ? ORDER BY value DESC LIMIT 10');
             $stmt->execute(["%$data%"]);
             return $stmt->fetchAll(PDO::FETCH_CLASS, 'LevelsRanks\Entity\Player');
         }
