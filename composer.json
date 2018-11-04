@@ -1,0 +1,12 @@
+{
+    "name": "sborislav/levelsranks",
+    "type": "library",
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "LevelsRanks\\": "lib/"
+        }
+    }
+}
